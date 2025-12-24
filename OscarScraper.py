@@ -14,13 +14,17 @@ def Scraper():
     Automates a download of OSCAR satellite data via ChromeDriver.
     If run as an executable, data is presented as a DataFrame, otherwise it is presented as a dictionary.
     """
+    #gets current directory
+    filePath = os.path.dirname(os.path.realpath(__file__))
 
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    options.add_argument('--headless=new')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
-    options.page_load_strategy = 'none'
+    #sets download path to current directory
+    prefs = {"download.default_directory" : filePath}
+    options.add_experimental_option("prefs",prefs)
 
     # returns the path web driver downloaded
     chrome_path = ChromeDriverManager().install()
@@ -46,7 +50,7 @@ def Scraper():
     # close driver session
     driver.quit()
 
-    # generate OSCAR DataFrames
+    # generate OSCAR DataFrame
     oscarXL = []
     for file in os.listdir():
         if (file[-5:] == '.xlsx'):
